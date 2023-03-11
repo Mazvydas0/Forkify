@@ -1,0 +1,32 @@
+{
+  "name": "forkify-app",
+  "version": "1.0.0",
+  "description": "Recipe application",
+  "default": "index.html",
+  "browserslist": "> 0.5%, last 2 versions, not dead",
+  "targets": {
+    "main": false
+  },
+  "scripts": {
+    "start": "parcel index.html",
+    "build": "parcel build index.html --dist-dir ./dist"
+  },
+  "author": "Mazvydas Svirskas",
+  "license": "ISC",
+  "devDependencies": {
+    "@parcel/transformer-sass": "^2.2.1",
+    "parcel": "^2.2.1"
+  },
+  "dependencies": {
+    "fracty": "^1.0.9"
+  },
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mazvydas0/Forkify.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Mazvydas0/Forkify/issues"
+  },
+  "homepage": "https://github.com/Mazvydas0/Forkify#readme"
+}
