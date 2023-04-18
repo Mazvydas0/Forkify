@@ -28,6 +28,28 @@
     }
   }
 }
+.pagination-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.total-pages-first {
+  color: $color-primary;
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-left: 13.15rem;
+}
+.total-pages{
+  color: $color-primary;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+.total-pages-last{
+  color: $color-primary;
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-right: 13.15rem;
+}
 
 .copyright {
   color: $color-grey-dark-2;
