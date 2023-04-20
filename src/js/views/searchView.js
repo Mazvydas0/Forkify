@@ -17,6 +17,11 @@ class SearchView {
       handler();
     });
   }
+
+  getSortDropdown() {
+  return document.querySelector('.search__sort-dropdown');
+  };
+
 }
 
 export default new SearchView();

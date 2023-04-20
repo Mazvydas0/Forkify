@@ -7,6 +7,9 @@ import paginationView from './views/paginationView.js';
 import bookmarksView from './views/bookmarksView.js';
 import addRecipeView from './views/addRecipeView.js';
 
+import { API_URL, RES_PER_PAGE, KEY } from './config.js';
+import { AJAX } from './helpers.js';
+
 // import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 
@@ -34,22 +37,33 @@ const controlRecipes = async function () {
   }
 };
 
-const controlSearchResults = async function () {
+const controlSearchResults = async function (sortBy = '') {
   try {
     resultsView.renderSpinner();
 
     // 1) Get search query
     const query = searchView.getQuery();
-    if (!query) return;
+    if (!query) {
+        toggleSortDropdown(false);
+        return;
+    }
 
     // 2) Load search results
     await model.loadSearchResults(query);
+
+    const ResultedRecipesIds = model.state.search.results.map(
+      recipe => recipe.id
+    );
+    console.log();
 
     // 3) Render results
     resultsView.render(model.getSearchResultsPage());
 
     // 4) Render initial pagination buttons
     paginationView.render(model.state.search);
+
+    // 5) Show the sorting drop-down menu
+    toggleSortDropdown(true);
   } catch (err) {
     console.log(err);
   }
@@ -69,6 +83,7 @@ const controlServings = function (newServings) {
 
   // Update the recipe view
   recipeView.update(model.state.recipe);
+
 };
 
 const controlAddBookmark = function () {
@@ -94,7 +109,6 @@ const controlAddRecipe = async function (newRecipe) {
 
     // Upload the new recipe data
     await model.uploadRecipe(newRecipe);
-    console.log(model.state.recipe);
 
     // Render recipe
     recipeView.render(model.state.recipe);
@@ -118,12 +132,61 @@ const controlAddRecipe = async function (newRecipe) {
   }
 };
 
+const fetchFullRecipeData = async function (recipes) {
+  const fullRecipes = await Promise.all(
+    recipes.map(async recipe => {
+      await model.loadRecipe(recipe.id);
+      return model.state.recipe;
+    })
+  );
+  return fullRecipes;
+};
+
+const toggleSortDropdown = function (show) {
+  const sortDropdown = document.querySelector('.sort-container');
+  sortDropdown.style.display = show ? 'block' : 'none';
+}
+
+
+const controlSortSearchResults = async function (sortBy) {
+  try {
+    resultsView.renderSpinner();
+
+    // Fetch complete recipe data for all search results
+    const fullRecipes = await fetchFullRecipeData(model.state.search.results);
+
+    if (sortBy === 'duration') {
+      fullRecipes.sort((a, b) => a.cookingTime - b.cookingTime);
+    } else if (sortBy === 'ingredients') {
+      fullRecipes.sort((a, b) => a.ingredients.length - b.ingredients.length);
+    }
+
+    // Replace the search results in the state with the sorted full recipe data
+    model.state.search.results = fullRecipes;
+
+    // Render results
+    resultsView.render(model.getSearchResultsPage());
+
+    // Render initial pagination buttons
+    paginationView.render(model.state.search);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+
+
 const init = function () {
   bookmarksView.addHandlerRender(controlBookmarks);
   recipeView.addHandlerRender(controlRecipes);
   recipeView.addHandlerUpdateServings(controlServings);
   recipeView.addHandlerAddBookmark(controlAddBookmark);
   searchView.addHandlerSearch(controlSearchResults);
+
+  searchView.getSortDropdown().addEventListener('change', function (e) {
+    controlSortSearchResults(e.target.value);
+  });
+
   paginationView.addHandlerClick(controlPagination);
   addRecipeView.addHandlerUpload(controlAddRecipe);
 };

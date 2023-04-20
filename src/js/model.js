@@ -39,7 +39,6 @@ export const loadRecipe = async function (id) {
       state.recipe.bookmarked = true;
     else state.recipe.bookmarked = false;
 
-    console.log(state.recipe);
   } catch (err) {
     // Temp error handling
     console.error(`${err} 💥💥💥💥`);
@@ -47,28 +46,41 @@ export const loadRecipe = async function (id) {
   }
 };
 
-export const loadSearchResults = async function (query) {
+export const loadSearchResults = async function (query, sortBy = '') {
   try {
     state.search.query = query;
 
     const data = await AJAX(`${API_URL}?search=${query}&key=${KEY}`);
-    console.log(data);
-
+    
     state.search.results = data.data.recipes.map(rec => {
       return {
         id: rec.id,
         title: rec.title,
         publisher: rec.publisher,
         image: rec.image_url,
+        cookingTime: rec.cooking_time,
+        ingredients: rec.ingredients ? rec.ingredients : [],
         ...(rec.key && { key: rec.key }),
       };
     });
+    console.log(state.search.results)
+
+    if (sortBy === 'duration') {
+      state.search.results.sort((a, b) => a.cookingTime - b.cookingTime);
+    } else if (sortBy === 'ingredients') {
+      state.search.results.sort(
+        (a, b) => a.ingredients.length - b.ingredients.length
+      );
+    }
+
     state.search.page = 1;
   } catch (err) {
     console.error(`${err} 💥💥💥💥`);
     throw err;
   }
 };
+
+
 
 export const getSearchResultsPage = function (page = state.search.page) {
   state.search.page = page;
