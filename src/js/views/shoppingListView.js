@@ -1,6 +1,4 @@
 import View from './View.js';
-import previewView from './previewView.js';
-import icons from 'url:../../img/icons.svg'; // Parcel 2
 
 class ShoppingListView extends View {
   _parentElement = document.querySelector('.shopping-cart');

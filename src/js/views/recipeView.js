@@ -3,8 +3,7 @@ import View from './View.js';
 // import icons from '../img/icons.svg'; // Parcel 1
 import icons from 'url:../../img/icons.svg'; // Parcel 2
 
-
-import fracty from "fracty";
+import fracty from 'fracty';
 
 class RecipeView extends View {
   _parentElement = document.querySelector('.recipe');
@@ -32,7 +31,7 @@ class RecipeView extends View {
     });
   }
 
-  addHandlerAddToShoppingList(handler){
+  addHandlerAddToShoppingList(handler) {
     this._parentElement.addEventListener('click', function (e) {
       const btn = e.target.closest('.recipe__btn-add');
       if (!btn) return;
@@ -103,9 +102,11 @@ class RecipeView extends View {
       </div>
 
       <div class="recipe__ingredients">
-        <h2 class="heading--2">Recipe ingredients</h2>
-        <ul class="recipe__ingredient-list">
-          ${this._data.ingredients.map(this._generateMarkupIngredient).join('')}
+          <div>
+            <h2 class="heading--2">Recipe ingredients</h2>
+            <ul class="recipe__ingredient-list">
+              ${this._data.ingredients.map(this._generateMarkupIngredient).join('')}
+          </div>
           <button class="btn recipe__btn-add">
             <svg class="search__icon">
               <use href="src/img/shoppingCart.png"></use>
@@ -144,7 +145,7 @@ class RecipeView extends View {
         <use href="${icons}#icon-check"></use>
       </svg>
       <div class="recipe__quantity">${
-      ing.quantity ? fracty(ing.quantity).toString() : ''
+        ing.quantity ? fracty(ing.quantity).toString() : ''
       }</div>
       <div class="recipe__description">
         <span class="recipe__unit">${ing.unit}</span>

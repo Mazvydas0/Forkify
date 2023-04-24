@@ -48,7 +48,9 @@ class AddRecipeView extends View {
       e.preventDefault();
       const dataArr = [...new FormData(this)]; // because we're inside handler function and this points to form (parentElement)
       const data = Object.fromEntries(dataArr);
-      location.reload();
+      setTimeout(() => {
+        location.reload();
+      }, 2000);
       handler(data);
     });
   }

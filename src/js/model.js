@@ -13,7 +13,7 @@ export const state = {
     resultsPerPage: RES_PER_PAGE,
   },
   bookmarks: [],
-  shoppingListItems: []
+  shoppingListItems: [],
 };
 
 const createRecipeObject = function (data) {
@@ -51,7 +51,7 @@ export const loadSearchResults = async function (query, sortBy = '') {
     state.search.query = query;
 
     const data = await AJAX(`${API_URL}?search=${query}&key=${KEY}`);
-    
+
     state.search.results = data.data.recipes.map(rec => {
       return {
         id: rec.id,
@@ -102,7 +102,10 @@ const persistBookmarks = function () {
 };
 
 export const persistShoppingList = function () {
-  localStorage.setItem('Shopping List', JSON.stringify(state.shoppingListItems));
+  localStorage.setItem(
+    'Shopping List',
+    JSON.stringify(state.shoppingListItems)
+  );
 };
 
 export const addBookmark = function (recipe) {
@@ -136,7 +139,6 @@ export const addShoppingListItem = function (items) {
 
   persistShoppingList();
 };
-
 
 export const deleteBookmark = function (id) {
   // Delete bookmark
