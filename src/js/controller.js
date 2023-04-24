@@ -5,6 +5,7 @@ import searchView from './views/searchView.js';
 import resultsView from './views/resultsView.js';
 import paginationView from './views/paginationView.js';
 import bookmarksView from './views/bookmarksView.js';
+import shoppingListView from './views/shoppingListView.js';
 import addRecipeView from './views/addRecipeView.js';
 
 import { API_URL, RES_PER_PAGE, KEY } from './config.js';
@@ -44,17 +45,12 @@ const controlSearchResults = async function (sortBy = '') {
     // 1) Get search query
     const query = searchView.getQuery();
     if (!query) {
-        toggleSortDropdown(false);
-        return;
+      toggleSortDropdown(false);
+      return;
     }
 
     // 2) Load search results
     await model.loadSearchResults(query);
-
-    const ResultedRecipesIds = model.state.search.results.map(
-      recipe => recipe.id
-    );
-    console.log();
 
     // 3) Render results
     resultsView.render(model.getSearchResultsPage());
@@ -83,7 +79,14 @@ const controlServings = function (newServings) {
 
   // Update the recipe view
   recipeView.update(model.state.recipe);
+};
 
+const controlBookmarks = function () {
+  bookmarksView.render(model.state.bookmarks);
+};
+
+const controlShoppingList = function () {
+  shoppingListView.render(model.state.shoppingListItems);
 };
 
 const controlAddBookmark = function () {
@@ -97,9 +100,11 @@ const controlAddBookmark = function () {
   // 3) Render bookmarks
   bookmarksView.render(model.state.bookmarks);
 };
+//TODO
+const controlAddToShoppingList = function () {
+  model.addShoppingListItem(model.state.recipe.ingredients);
 
-const controlBookmarks = function () {
-  bookmarksView.render(model.state.bookmarks);
+  shoppingListView.render(model.state.shoppingListItems);
 };
 
 const controlAddRecipe = async function (newRecipe) {
@@ -145,8 +150,7 @@ const fetchFullRecipeData = async function (recipes) {
 const toggleSortDropdown = function (show) {
   const sortDropdown = document.querySelector('.sort-container');
   sortDropdown.style.display = show ? 'block' : 'none';
-}
-
+};
 
 const controlSortSearchResults = async function (sortBy) {
   try {
@@ -174,13 +178,25 @@ const controlSortSearchResults = async function (sortBy) {
   }
 };
 
+const controlDeleteIngredient = function (id) {
+  const btn = document.getElementById(`${id}`);
+  btn.closest('.ingredients_list').remove();
 
+  const indexToRemove = model.state.shoppingListItems.findIndex(
+    item => item.id === +id
+  );
+  model.state.shoppingListItems.splice(indexToRemove, 1);
+  model.persistShoppingList();
+};
 
 const init = function () {
   bookmarksView.addHandlerRender(controlBookmarks);
+  shoppingListView.addHandlerRender(controlShoppingList);
+  shoppingListView.AddHandlerDeleteIngredient(controlDeleteIngredient);
   recipeView.addHandlerRender(controlRecipes);
   recipeView.addHandlerUpdateServings(controlServings);
   recipeView.addHandlerAddBookmark(controlAddBookmark);
+  recipeView.addHandlerAddToShoppingList(controlAddToShoppingList);
   searchView.addHandlerSearch(controlSearchResults);
 
   searchView.getSortDropdown().addEventListener('change', function (e) {

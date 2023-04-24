@@ -36,6 +36,29 @@
   }
 }
 
+
+.btn__ingredient-add,
+.btn__ingredient-remove {
+  @extend %btn;
+
+  padding: 0.75rem 2rem;
+  font-size: 1.4rem;
+  font-weight: 600;
+
+  svg {
+    height: 1.5rem;
+    width: 1.5rem;
+    fill: currentColor;
+  }
+}
+
+.recipe__btn-add{
+  position: relative;
+  width: 100%;
+  left: 55%;
+  font-weight: 100;
+}
+
 .btn--small {
   &,
   &:link,
@@ -210,4 +233,66 @@
     line-height: 1.5;
     font-weight: 600;
   }
+}
+
+.ingredients_list{
+  display: flex;
+    align-items: flex-start;
+    padding: 1.3rem 0;
+    border-bottom: 1px solid #F2EFEE;
+    position: relative;
+}
+
+.shopping__count-value{
+  display: inline;
+}
+
+.unit{
+    flex: 1;
+    font-size: 1.3rem;
+    margin-top: .4rem;
+    margin-right: .5rem;
+    margin-left: 1rem;
+}
+
+.shopping-count{
+  flex: 0 0 7.5rem;
+    padding: .4rem .5rem;
+    border: 1px solid #F2EFEE;
+    border-radius: 3px;
+    margin-right: 2rem;
+    margin-left: 2rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+}
+
+
+.shopping__description{
+    flex: 1;
+    font-size: 1.3rem;
+    margin-top: .4rem;
+    margin-right: 1.5rem;
+}
+
+.close-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.close-button:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.close-button svg {
+  fill: none;
+  stroke: #000;
 }

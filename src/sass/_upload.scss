@@ -43,6 +43,7 @@
 }
 
 .upload {
+  position: relative;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 4rem 6rem;
@@ -62,6 +63,7 @@
     & input {
       font-size: 1.5rem;
       padding: 0.8rem 1rem;
+      width: 100%;
       border: 1px solid #ddd;
       border-radius: 0.5rem;
       transition: all 0.2s;
@@ -81,6 +83,7 @@
       grid-column: 1 / span 2;
       justify-self: center;
       margin-top: 1rem;
+      margin-bottom: 1rem;
     }
   }
 
@@ -97,3 +100,16 @@
     justify-self: center;
   }
 }
+
+
+.upload__column {
+  margin-top: 10%;
+
+}
+
+.upload__heading {
+  position: absolute;
+  top: 0px;
+  display: inline-block;
+}
+

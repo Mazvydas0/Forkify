@@ -13,6 +13,7 @@ export const state = {
     resultsPerPage: RES_PER_PAGE,
   },
   bookmarks: [],
+  shoppingListItems: []
 };
 
 const createRecipeObject = function (data) {
@@ -38,7 +39,6 @@ export const loadRecipe = async function (id) {
     if (state.bookmarks.some(bookmark => bookmark.id === id))
       state.recipe.bookmarked = true;
     else state.recipe.bookmarked = false;
-
   } catch (err) {
     // Temp error handling
     console.error(`${err} 💥💥💥💥`);
@@ -63,7 +63,6 @@ export const loadSearchResults = async function (query, sortBy = '') {
         ...(rec.key && { key: rec.key }),
       };
     });
-    console.log(state.search.results)
 
     if (sortBy === 'duration') {
       state.search.results.sort((a, b) => a.cookingTime - b.cookingTime);
@@ -79,8 +78,6 @@ export const loadSearchResults = async function (query, sortBy = '') {
     throw err;
   }
 };
-
-
 
 export const getSearchResultsPage = function (page = state.search.page) {
   state.search.page = page;
@@ -104,6 +101,10 @@ const persistBookmarks = function () {
   localStorage.setItem('bookmarks', JSON.stringify(state.bookmarks));
 };
 
+export const persistShoppingList = function () {
+  localStorage.setItem('Shopping List', JSON.stringify(state.shoppingListItems));
+};
+
 export const addBookmark = function (recipe) {
   // Add bookmark
   state.bookmarks.push(recipe);
@@ -113,6 +114,29 @@ export const addBookmark = function (recipe) {
 
   persistBookmarks();
 };
+
+export const addShoppingListItem = function (items) {
+  items.forEach(item => {
+    const existingItemIndex = state.shoppingListItems.findIndex(
+      listItem => listItem.description === item.description
+    );
+
+    if (existingItemIndex === -1) {
+      // If the item does not exist in the shopping list, add it
+      item.id = Date.now() + Math.random();
+      state.shoppingListItems.push(item);
+    } else {
+      // If the item exists and has a quantity, update the quantity
+      const existingItem = state.shoppingListItems[existingItemIndex];
+      if (existingItem.quantity && item.quantity) {
+        existingItem.quantity += item.quantity;
+      }
+    }
+  });
+
+  persistShoppingList();
+};
+
 
 export const deleteBookmark = function (id) {
   // Delete bookmark
@@ -126,9 +150,18 @@ export const deleteBookmark = function (id) {
 };
 
 const init = function () {
-  const storage = localStorage.getItem('bookmarks');
-  if (storage) state.bookmarks = JSON.parse(storage);
+  const storageBookmarks = localStorage.getItem('bookmarks');
+  const storageShoppingList = localStorage.getItem('Shopping List');
+
+  if (storageBookmarks) {
+    state.bookmarks = JSON.parse(storageBookmarks);
+  }
+
+  if (storageShoppingList) {
+    state.shoppingListItems = JSON.parse(storageShoppingList);
+  }
 };
+
 init();
 
 const clearBookmarks = function () {
